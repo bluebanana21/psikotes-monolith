@@ -1,6 +1,6 @@
 import db from "../config/database.conf";
 
-const createTables = `
+const initializeTables = `
 create table if not exists users (
     id int PRIMARY KEY AUTO_INCREMENT,
     name varchar(255),
@@ -76,9 +76,9 @@ create table if not exists review(
 
 `;
 
-db.query(createTables, function(err: any,result: any) {
+db.query(initializeTables, function(err: any,result: any) {
     if (err) throw err;
     console.log("Table created")
 })
 
-export default createTables;
+export default initializeTables;
