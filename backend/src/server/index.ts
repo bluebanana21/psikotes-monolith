@@ -5,6 +5,7 @@ import path from "path";
 import authRouter from "../controllers/auth.controllers.ts";
 import initializeDatabase from "../database/db.create.ts";
 import insertUsers from "../database/db.user.create.ts";
+import surveyRouter from "../controllers/survey.controllers.ts";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,7 +18,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../build')));
 }
 
-app.use('/api', authRouter);
+app.use('/api', [authRouter, surveyRouter]);
 
 app.get("/api/health", (req: Request, res: Response) => {
   res.json({ message: "Welcome to Node.js + TypeScript API", status: "healthy" });
