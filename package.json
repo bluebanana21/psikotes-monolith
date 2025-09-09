@@ -1,33 +1,35 @@
 {
-  "name": "bun-react-template",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
+  "name": "psikotes-monolith",
+  "version": "1.0.0",
+  "description": "Psikotes application with separate frontend and backend",
   "scripts": {
-    "dev": "bun --hot frontend/src/index.tsx",
-    "start": "NODE_ENV=production bun frontend/src/index.tsx",
-    "build": "bun run build.ts"
-  },
-  "dependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
-    "bcrypt": "^6.0.0",
-    "bun-plugin-tailwind": "^0.0.15",
-    "concurrently": "^9.2.1",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "jwt": "^0.2.0",
-    "mysql2": "^3.14.4",
-    "react": "^19",
-    "react-dom": "^19",
-    "react-router-dom": "^7.8.2",
-    "tailwindcss": "^4.1.11"
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "start": "cd backend && npm start",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "clean": "rimraf backend/dist frontend/dist",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test"
   },
   "devDependencies": {
-    "@types/bcrypt": "^6.0.0",
-    "@types/bun": "latest",
-    "@types/react": "^19",
-    "@types/react-dom": "^19"
+    "concurrently": "^8.2.2",
+    "rimraf": "^5.0.5"
+  },
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "dependencies": {
+    "@types/bun": "^1.2.21",
+    "bun-plugin-tailwind": "^0.0.15",
+    "daisyui": "^5.1.9",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^4.1.13"
   }
 }

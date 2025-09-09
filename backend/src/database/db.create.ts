@@ -1,10 +1,10 @@
-import db from "../config/database.conf";
+import db from "../config/database.conf.ts";
 
 const initializeTables = `
 create table if not exists users (
     id int PRIMARY KEY AUTO_INCREMENT,
     name varchar(255),
-    email varchar(255),
+    email varchar(255) UNIQUE,
     password varchar(255),
     DoB date,
     PoB varchar(255),
@@ -76,9 +76,9 @@ create table if not exists review(
 
 `;
 
-db.query(initializeTables, function(err: any,result: any) {
-    if (err) throw err;
-    console.log("Table created")
-})
+db.query(initializeTables, function (err: any, result: any) {
+  if (err) throw err;
+  console.log("Table created");
+});
 
 export default initializeTables;

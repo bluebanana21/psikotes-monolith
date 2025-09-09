@@ -1,0 +1,30 @@
+{
+  "name": "psikotes-frontend",
+  "version": "1.0.0",
+  "description": "Frontend React application for Psikotes",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot src/index.html",
+    "build": "bun run build.ts",
+    "preview": "bun run --port 5173 dist/index.html"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.3.1",
+    "axios": "^1.5.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.45.4",
+    "react-router-dom": "^6.15.0",
+    "zod": "^3.22.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "typescript": "^5.0.2"
+  }
+}

@@ -2,9 +2,9 @@
 import express, { type Request, type Response } from "express";
 import cors from "cors";
 import path from "path";
-import authRouter from "../src/controllers/auth.controllers.ts";
-import initializeDatabase from "../src/database/db.create.ts";
-import insertUsers from "../src/database/db.user.create.ts";
+import authRouter from "../controllers/auth.controllers.ts";
+import initializeDatabase from "../database/db.create.ts";
+import insertUsers from "../database/db.user.create.ts";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
