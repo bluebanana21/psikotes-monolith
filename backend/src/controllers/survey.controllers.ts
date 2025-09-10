@@ -8,10 +8,9 @@ import {
 import { stringify } from "querystring";
 
 const surveyRouter = Router();
-
-//for creation of survey
-surveyRouter.post("/create-survey", async (req, res) => {
-  const { title, description, startDate, endDate } = req.body;
+export class surveyController {
+ static async createSurvey (req:any, res:any) {
+   const { title, description, startDate, endDate } = req.body;
 
   try {
     const surveyQuery = `insert into surveys (title, description, startDate, endDate) values (?, ?, ?, ?)`;
@@ -91,11 +90,11 @@ surveyRouter.post("/create-survey", async (req, res) => {
     );
   } catch (error) {
     res.status(500).send("error creating survey");
-  }
-});
+  } 
+}
 
-surveyRouter.get("/get-survey/:surveyId", async (req, res) => {
-  try {
+static async getSurvey(req:any, res:any) {
+   try {
     const surveyId = req.params.surveyId;
     
     // Get survey basic info
@@ -175,7 +174,9 @@ surveyRouter.get("/get-survey/:surveyId", async (req, res) => {
   } catch (error) {
     console.error("Error fetching survey:", error);
     res.status(500).json({ error: "Internal server error" });
-  }
-});
+  } 
+}
 
-export default surveyRouter;
+ 
+} 
+
