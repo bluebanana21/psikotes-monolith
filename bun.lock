@@ -9,12 +9,12 @@
         "daisyui": "^5.1.9",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
-        "tailwindcss": "^4.1.13",
+        "tailwindcss": "^4.1.13"
       },
       "devDependencies": {
         "concurrently": "^8.2.2",
-        "rimraf": "^5.0.5",
-      },
+        "rimraf": "^5.0.5"
+      }
     },
     "backend": {
       "name": "psikotes-backend",
@@ -29,7 +29,7 @@
         "express-rate-limit": "^6.10.0",
         "helmet": "^7.0.0",
         "jsonwebtoken": "^9.0.2",
-        "mysql2": "^3.6.0",
+        "mysql2": "^3.6.0"
       },
       "devDependencies": {
         "@types/bcryptjs": "^2.4.2",
@@ -45,8 +45,8 @@
         "rimraf": "^5.0.1",
         "ts-jest": "^29.1.1",
         "ts-node": "^10.9.1",
-        "typescript": "^5.1.6",
-      },
+        "typescript": "^5.1.6"
+      }
     },
     "frontend": {
       "name": "psikotes-frontend",
@@ -58,7 +58,7 @@
         "react-dom": "^18.3.1",
         "react-hook-form": "^7.45.4",
         "react-router-dom": "^6.15.0",
-        "zod": "^3.22.2",
+        "zod": "^3.22.2"
       },
       "devDependencies": {
         "@types/react": "^18.2.15",
@@ -68,9 +68,9 @@
         "eslint": "^8.45.0",
         "eslint-plugin-react-hooks": "^4.6.0",
         "eslint-plugin-react-refresh": "^0.4.3",
-        "typescript": "^5.0.2",
-      },
-    },
+        "typescript": "^5.0.2"
+      }
+    }
   },
   "packages": {
     "@babel/code-frame": ["@babel/code-frame@7.27.1", "", { "dependencies": { "@babel/helper-validator-identifier": "^7.27.1", "js-tokens": "^4.0.0", "picocolors": "^1.1.1" } }, "sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg=="],
