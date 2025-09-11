@@ -17,7 +17,7 @@ export class answerController {
           db.query(
             answerQuery,
             [answer.takerId, answer.answerText, answer.questionId],
-            (err: any, results: any) => {
+            (err: any) => {
               if (err) throw err;
               console.info("inserted into answers for essay question");
             }
@@ -26,7 +26,7 @@ export class answerController {
           db.query(
             choiceAnswerQuery,
             [answer.takerId, answer.questionChoiceId],
-            (err: any, results: any) => {
+            (err: any) => {
               if (err) throw err;
               console.info("inserted into answer for choice");
             }
@@ -46,7 +46,7 @@ export class answerController {
         db.query(resultQuery, [takerId, surveyId, JSON.stringify(response)], (err, res) => {
           if (err) throw err
         });
-        res.status(200).json(response);
+        res.status(201).json(response);
       } catch (error) {
         console.error("error sending answers: ", error);
         res.status(500).json("internal server error: ", error);
