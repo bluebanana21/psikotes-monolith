@@ -43,7 +43,7 @@ create table if not exists questionChoices(
     CONSTRAINT FK_questionChoiceQuestion FOREIGN KEY (questionId) REFERENCES questions(id)
 );
 
-create table if not exists answer(
+create table if not exists answers(
     id int PRIMARY KEY AUTO_INCREMENT,
     takerId int,
     answerText varchar(255),
@@ -69,7 +69,7 @@ create table if not exists results(
     CONSTRAINT FK_resultsSurvey FOREIGN KEY (surveyId) REFERENCES surveys(id)
 );
 
-create table if not exists review(
+create table if not exists reviews(
     id int PRIMARY KEY AUTO_INCREMENT,
     resultId int,
     keterangan ENUM('disarankan', 'dipertimbangkan', 'tidak disarankan'),

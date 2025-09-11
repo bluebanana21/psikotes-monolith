@@ -6,6 +6,7 @@ import initializeDatabase from "../database/db.create.ts";
 import insertUsers from "../database/db.user.create.ts";
 import authRouter from "../routes/authRoutes.ts";
 import surveyRouter from "../routes/surveyRoutes.ts";
+import answerRouter from "../routes/answerRoutes.ts";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,7 +19,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../build")));
 }
 
-app.use("/api", [authRouter, surveyRouter]);
+app.use("/api", [authRouter, surveyRouter, answerRouter]);
 
 app.get("/api/health", (req: Request, res: Response) => {
   res.json({

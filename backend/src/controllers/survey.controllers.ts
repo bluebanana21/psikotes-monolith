@@ -1,182 +1,177 @@
-import { Router } from "express";
 import db from "../config/database.conf.ts";
-import {
-  type Question,
-  type Section,
-  type Survey,
-} from "../interfaces/survey.interface.ts";
-import { stringify } from "querystring";
+import { type Survey } from "../interfaces/survey.interface.ts";
 
-const surveyRouter = Router();
 export class surveyController {
- static async createSurvey (req:any, res:any) {
-   const { title, description, startDate, endDate } = req.body;
 
-  try {
-    const surveyQuery = `insert into surveys (title, description, startDate, endDate) values (?, ?, ?, ?)`;
-    db.query(
-      surveyQuery,
-      [title, description, startDate, endDate],
-      (err: any, results: any) => {
-        if (err) {
-          throw err;
-        }
-        console.log(results.insertId);
-        const surveyInsertId = results.insertId;
+  static async createSurvey(req: any, res: any) {
+    const { title, description, startDate, endDate } = req.body;
 
-        try {
-          const survey: Survey = req.body;
-          const sectionQuery = `insert into sections (surveyId) values (?);`;
+    try {
+      const surveyQuery = `insert into surveys (title, description, startDate, endDate) values (?, ?, ?, ?)`;
+      db.query(
+        surveyQuery,
+        [title, description, startDate, endDate],
+        (err: any, results: any) => {
+          if (err) {
+            throw err;
+          }
+          console.log(results.insertId);
+          const surveyInsertId = results.insertId;
 
-          survey.sections.forEach(async (section) => {
-            db.query(
-              sectionQuery,
-              [surveyInsertId],
-              (err: any, results: any) => {
-                if (err) {
-                  throw err;
-                }
-                const resultsInsertId = results.insertId;
+          try {
+            const survey: Survey = req.body;
+            const sectionQuery = `insert into sections (surveyId) values (?);`;
 
-                section.questions.forEach(async (question) => {
-                  const questionQuery = `
+            survey.sections.forEach(async (section) => {
+              db.query(
+                sectionQuery,
+                [surveyInsertId],
+                (err: any, results: any) => {
+                  if (err) {
+                    throw err;
+                  }
+                  const resultsInsertId = results.insertId;
+
+                  section.questions.forEach(async (question) => {
+                    const questionQuery = `
             insert into questions (questionText, questionType, imagePath, sectionId) 
           values (?, ?, ?, ?)`;
 
-                  const imagePath = (question.image?.toLowerCase(), Date.now());
+                    const imagePath =
+                      (question.image?.toLowerCase(), Date.now());
 
-                  db.query(
-                    questionQuery,
-                    [
-                      question.question_text,
-                      question.question_type,
-                      imagePath,
-                      resultsInsertId,
-                    ],
-                    (err: any, results: any) => {
-                      if (err) {
-                        throw err;
-                      }
+                    db.query(
+                      questionQuery,
+                      [
+                        question.question_text,
+                        question.question_type,
+                        imagePath,
+                        resultsInsertId,
+                      ],
+                      (err: any, results: any) => {
+                        if (err) {
+                          throw err;
+                        }
 
-                      const questionInsertId = results.insertId;
+                        const questionInsertId = results.insertId;
 
-                      if (question.question_type === "choice") {
-                        question.choices?.forEach(async (choice) => {
-                          const choiceQuery = `insert into questionchoices (choiceText, status, questionId, imagePath) 
+                        if (question.question_type === "choice") {
+                          question.choices?.forEach(async (choice) => {
+                            const choiceQuery = `insert into questionchoices (choiceText, status, questionId, imagePath) 
                           values (?, ?, ?, ?)`;
 
-                          const imagePath = (choice.image?.toLowerCase,
-                          Date.now).toString;
+                            const imagePath = (choice.image?.toLowerCase,
+                            Date.now).toString;
 
-                          db.query(choiceQuery, [
-                            choice.answer_choice,
-                            choice.status,
-                            questionInsertId,
-                            imagePath,
-                          ]);
-                        });
+                            db.query(choiceQuery, [
+                              choice.answer_choice,
+                              choice.status,
+                              questionInsertId,
+                              imagePath,
+                            ]);
+                          });
+                        }
                       }
-                    }
-                  );
-                });
-              }
-            );
-          });
-        } catch (error) {
-          res.status(500).send(`error sending questions ${error}`);
+                    );
+                  });
+                }
+              );
+            });
+          } catch (error) {
+            res.status(500).send(`error sending questions ${error}`);
+          }
+          res.status(201).send(JSON.stringify("successfully created surveys"));
         }
-        res.status(201).send(JSON.stringify('successfully created surveys'));
-      }
-    );
-  } catch (error) {
-    res.status(500).send("error creating survey");
-  } 
-}
-
-static async getSurvey(req:any, res:any) {
-   try {
-    const surveyId = req.params.surveyId;
-    
-    // Get survey basic info
-    const surveyQuery = `SELECT * FROM surveys WHERE id = ?`;
-    
-    // Promisify database queries for easier async handling
-    const queryAsync = (query: string, params: any[]) => {
-      return new Promise((resolve, reject) => {
-        db.query(query, params, (err, results) => {
-          if (err) reject(err);
-          else resolve(results);
-        });
-      });
-    };
-
-    const surveyResults: any = await queryAsync(surveyQuery, [surveyId]);
-    
-    if (!surveyResults || surveyResults.length === 0) {
-      return res.status(404).json({ error: "Survey not found" });
+      );
+    } catch (error) {
+      res.status(500).send("error creating survey");
     }
+  }
 
-    const survey = surveyResults[0];
+  static async getSurvey(req: any, res: any) {
+    try {
+      const surveyId = req.params.surveyId;
 
-    const sectionQuery = `SELECT * FROM sections WHERE surveyId = ?`;
-    const sectionResults: any = await queryAsync(sectionQuery, [surveyId]);
+      // Get survey basic info
+      const surveyQuery = `SELECT * FROM surveys WHERE id = ?`;
 
-    const sectionsWithQuestions = await Promise.all(
-      sectionResults.map(async (section: any) => {
-        const questionQuery = `SELECT * FROM questions WHERE sectionId = ?`;
-        const questionResults: any = await queryAsync(questionQuery, [section.id]);
+      // Promisify database queries for easier async handling
+      const queryAsync = (query: string, params: any[]) => {
+        return new Promise((resolve, reject) => {
+          db.query(query, params, (err, results) => {
+            if (err) reject(err);
+            else resolve(results);
+          });
+        });
+      };
 
-        const questionsWithChoices = await Promise.all(
-          questionResults.map(async (question: any) => {
-            let questionData = {
-              id: question.id,
-              question_text: question.questionText,
-              question_type: question.questionType,
-              image: question.imagePath,
-              choices: [] as any[]
-            };
+      const surveyResults: any = await queryAsync(surveyQuery, [surveyId]);
 
-            if (question.questionType === "choice") {
-              const choiceQuery = `SELECT * FROM questionChoices WHERE questionId = ?`;
-              const choiceResults: any = await queryAsync(choiceQuery, [question.id]);
-              
-              questionData.choices = choiceResults.map((choice: any) => ({
-                id: choice.id,
-                answer_choice: choice.choiceText,
-                status: choice.status,
-                image: choice.imagePath
-              }));
-            }
+      if (!surveyResults || surveyResults.length === 0) {
+        return res.status(404).json({ error: "Survey not found" });
+      }
 
-            return questionData;
-          })
-        );
+      const survey = surveyResults[0];
 
-        return {
-          id: section.id,
-          surveyId: section.surveyId,
-          questions: questionsWithChoices
-        };
-      })
-    );
+      const sectionQuery = `SELECT * FROM sections WHERE surveyId = ?`;
+      const sectionResults: any = await queryAsync(sectionQuery, [surveyId]);
 
-    const response = {
-      id: survey.id,
-      title: survey.title,
-      description: survey.description,
-      startDate: survey.startDate,
-      endDate: survey.endDate,
-      sections: sectionsWithQuestions
-    };
+      const sectionsWithQuestions = await Promise.all(
+        sectionResults.map(async (section: any) => {
+          const questionQuery = `SELECT * FROM questions WHERE sectionId = ?`;
+          const questionResults: any = await queryAsync(questionQuery, [
+            section.id,
+          ]);
 
-    res.status(200).json(response);
+          const questionsWithChoices = await Promise.all(
+            questionResults.map(async (question: any) => {
+              let questionData = {
+                id: question.id,
+                question_text: question.questionText,
+                question_type: question.questionType,
+                image: question.imagePath,
+                choices: [] as any[],
+              };
 
-  } catch (error) {
-    console.error("Error fetching survey:", error);
-    res.status(500).json({ error: "Internal server error" });
-  } 
+              if (question.questionType === "choice") {
+                const choiceQuery = `SELECT * FROM questionChoices WHERE questionId = ?`;
+                const choiceResults: any = await queryAsync(choiceQuery, [
+                  question.id,
+                ]);
+
+                questionData.choices = choiceResults.map((choice: any) => ({
+                  id: choice.id,
+                  answer_choice: choice.choiceText,
+                  status: choice.status,
+                  image: choice.imagePath,
+                }));
+              }
+
+              return questionData;
+            })
+          );
+
+          return {
+            id: section.id,
+            surveyId: section.surveyId,
+            questions: questionsWithChoices,
+          };
+        })
+      );
+
+      const response = {
+        id: survey.id,
+        title: survey.title,
+        description: survey.description,
+        startDate: survey.startDate,
+        endDate: survey.endDate,
+        sections: sectionsWithQuestions,
+      };
+
+      res.status(200).json(response);
+    } catch (error) {
+      console.error("Error fetching survey:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
 }
-
- 
-} 
-
