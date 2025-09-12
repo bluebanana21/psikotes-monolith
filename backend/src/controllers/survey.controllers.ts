@@ -1,8 +1,15 @@
 import db from "../config/database.conf.ts";
 import { type Survey } from "../interfaces/survey.interface.ts";
+import multer from "multer";
+import upload from "../config/upload.conf.ts";
+import { isSet } from "util/types";
+
+// Kolo mo upload image nanti namanya harus diganti dari sisi frontend
+// terus tambahin input hidden make nama image yang udah ke ganti.
+//
+// Kolo make api tester kaya postman atau curl gakbisa, Harus make frontend
 
 export class surveyController {
-
   static async createSurvey(req: any, res: any) {
     const { title, description, startDate, endDate } = req.body;
 
@@ -36,6 +43,88 @@ export class surveyController {
                     const questionQuery = `
             insert into questions (questionText, questionType, imagePath, sectionId) 
           values (?, ?, ?, ?)`;
+
+                    if (isSet(question.image)) {
+                      db.query(
+                        questionQuery,
+                        [
+                          question.question_text,
+                          question.question_type,
+                          question.image,
+                          resultsInsertId,
+                        ],
+                        (err: any, results: any) => {
+                          if (err) {
+                            throw err;
+                          }
+
+                          const questionInsertId = results.insertId;
+
+                          if (question.question_type === "choice") {
+                            question.choices?.forEach(async (choice) => {
+                              const choiceQuery = `insert into questionchoices (choiceText, status, questionId, imagePath) 
+                          values (?, ?, ?, ?)`;
+
+                              if (isSet(choice.image)) {
+                                db.query(choiceQuery, [
+                                  choice.answer_choice,
+                                  choice.status,
+                                  questionInsertId,
+                                  choice.image,
+                                ]);
+                              } else {
+                                db.query(choiceQuery, [
+                                  choice.answer_choice,
+                                  choice.status,
+                                  questionInsertId,
+                                  null,
+                                ]);
+                              }
+                            });
+                          }
+                        }
+                      );
+                    } else {
+                      db.query(
+                        questionQuery,
+                        [
+                          question.question_text,
+                          question.question_type,
+                          null,
+                          resultsInsertId,
+                        ],
+                        (err: any, results: any) => {
+                          if (err) {
+                            throw err;
+                          }
+
+                          const questionInsertId = results.insertId;
+
+                          if (question.question_type === "choice") {
+                            question.choices?.forEach(async (choice) => {
+                              const choiceQuery = `insert into questionchoices (choiceText, status, questionId, imagePath) 
+                          values (?, ?, ?, ?)`;
+
+                              if (isSet(choice.image)) {
+                                db.query(choiceQuery, [
+                                  choice.answer_choice,
+                                  choice.status,
+                                  questionInsertId,
+                                  choice.image,
+                                ]);
+                              } else {
+                                db.query(choiceQuery, [
+                                  choice.answer_choice,
+                                  choice.status,
+                                  questionInsertId,
+                                  null,
+                                ]);
+                              }
+                            });
+                          }
+                        }
+                      );
+                    }
 
                     const imagePath =
                       (question.image?.toLowerCase(), Date.now());
