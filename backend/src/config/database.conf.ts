@@ -12,14 +12,6 @@ export const connection = createConnection({
     multipleStatements: true
 });
 
-connection.connect((err) => {
-    if (err) {
-        throw err;
-    } else{
-        console.log("connected to database")
-    }
-})
-
 connection.connect(function(err: any){
     if (err){
         console.error(`error: ${err} `);

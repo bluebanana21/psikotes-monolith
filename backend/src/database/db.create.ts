@@ -27,9 +27,10 @@ create table if not exists sections(
 
 create table if not exists questions(
     id int PRIMARY KEY AUTO_INCREMENT,
-    question_text varchar(255),
-    question_type ENUM('choice', 'essay'),
+    questionText varchar(255),
+    questionType ENUM('choice', 'essay', 'scale'),
     sectionId int,
+    imagePath LONGTEXT,
     CONSTRAINT FK_questionSection FOREIGN KEY (sectionId) REFERENCES sections(id)    
 );
 
@@ -37,10 +38,12 @@ create table if not exists questionChoices(
     id int PRIMARY KEY AUTO_INCREMENT,
     choiceText varchar(255),
     questionId int,
+    status boolean, 
+    imagePath LONGTEXT,
     CONSTRAINT FK_questionChoiceQuestion FOREIGN KEY (questionId) REFERENCES questions(id)
 );
 
-create table if not exists answer(
+create table if not exists answers(
     id int PRIMARY KEY AUTO_INCREMENT,
     takerId int,
     answerText varchar(255),
@@ -66,7 +69,7 @@ create table if not exists results(
     CONSTRAINT FK_resultsSurvey FOREIGN KEY (surveyId) REFERENCES surveys(id)
 );
 
-create table if not exists review(
+create table if not exists reviews(
     id int PRIMARY KEY AUTO_INCREMENT,
     resultId int,
     keterangan ENUM('disarankan', 'dipertimbangkan', 'tidak disarankan'),
